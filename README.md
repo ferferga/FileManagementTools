@@ -12,7 +12,8 @@ They're Python 3 scripts, so you need a Python 3 interpreter installed in your s
 ``python <name of the file>.py`` in a terminal. However, each of the scripts may have their own requirements, these will be listed in a README
 file located in the same folder of the tool.
 
-The provided Windows binaries under the [Releases tab](https://github.com/ferferga/FileManagementTools/releases) doesn't require you to do anything.
+The provided Windows binaries under the [Releases tab](https://github.com/ferferga/FileManagementTools/releases) doesn't require you to do anything
+if you're running this on a Windows system.
 
 # Description of the tools
 
