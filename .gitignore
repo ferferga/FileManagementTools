@@ -1,0 +1,6 @@
+env
+.vscode
+dist
+build
+*.spec
+*.exe

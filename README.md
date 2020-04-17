@@ -6,15 +6,6 @@ as well in POSIX systems, though, although not tested).
 
 Those are made for getting the job done as quick as possible, so they're far from perfect.
 
-## How to run them
-
-They're Python 3 scripts, so you need a Python 3 interpreter installed in your system. Python scripts are executed by running
-``python <name of the file>.py`` in a terminal. However, each of the scripts may have their own requirements, these will be listed in a README
-file located in the same folder of the tool.
-
-The provided Windows binaries under the [Releases tab](https://github.com/ferferga/FileManagementTools/releases) doesn't require you to do anything
-if you're running this on a Windows system.
-
 # Description of the tools
 
 ## Folder structure copy
@@ -29,3 +20,16 @@ This tool will copy the modified files from a folder into another folder. Detail
 * You can now do the second scan. On it, the program will check which files were changed and will copy the modified ones to a folder of your choice (output's folder).
 
 New files will also be copied. Deleted files will be written to a ``deleted.txt`` file in the output's folder root.
+
+# How to run them
+
+I've built binaries for **Windows 64 bits** and **Linux (amd64 and armhf)**,
+which can be found in the [Releases tab](https://github.com/ferferga/FileManagementTools/releases), so you don't have to install Python or any requirements.
+
+For other architectures and systems, the general procedure to run this is to download Python > 3.6, clone this repository and install the requirements. One-line:
+
+``sudo apt install -y python3 python3-pip && git clone https://github.com/ferferga/FileManagementTools && cd FileManagementTools && python3 <program_to_run>``
+
+# License
+
+This is licensed as GPL3, so all the derivatives from this work must be open source as well. Any contribution is welcome!
