@@ -104,10 +104,14 @@ def second_run():
             rowcount += 1
             if row[0] in file_array:
                 file_array.remove(row[0])
+
+        print()
         if len(file_array) != 0:
-            print("\n" + str(len(file_array)) + " files were added.\nChecking first the differences of the files found in the first scan...")
+            print(str(len(file_array)) + " files were added.")
+            print("Checking first the differences of the files found in the first scan...")
         else:
-            print("\nNo files added. Checking differences...")
+            print("No files added. Checking differences...")
+
         if progress:
             bar = progressbar.ProgressBar(max_value=rowcount)
             loopCount = 0
@@ -118,8 +122,10 @@ def second_run():
             if progress:
                 loopCount += 1
                 bar.update(loopCount)
+
         if progress:
             bar.finish()
+
         if len(file_array) != 0:
             print("\nCalculating MD5Sum of the new files...")
             if progress:
@@ -133,24 +139,33 @@ def second_run():
                 bar.finish()
         db_conn.commit()
         print("Difference checking done!\n\n")
+
         while True:
             dest_folder = format_path(input("Where do you want to copy the changed files?: "))
             if check_folder(dest_folder):
                 break
             else:
                 print("Invalid path. Please, try again (make sure that it it's created first).")
-        print("\n\nCopying files to the directory...")
+
+        print()
+        print()
+        print("Copying files to the directory...")
+
         basepath = format_path(os.path.basename(orig_folder))
         if os.path.exists(format_path(os.path.join(dest_folder, basepath))):
             shutil.rmtree(format_path(os.path.join(dest_folder, basepath)), True)
         os.mkdir(format_path(os.path.join(dest_folder, basepath)))
-        db.execute("SELECT path FROM files WHERE (md5_before != md5_after) AND md5_after IS NOT NULL")
+
+        db.execute("SELECT path FROM files WHERE (md5_before != md5_after) OR md5_before IS NULL AND md5_after IS NOT NULL")
         for row in db:
             path = row[0]
-            path = path[path.find(basepath):]
+            path = row[0][row[0].find(basepath):]
+
             if not os.path.exists(format_path(os.path.join(dest_folder, os.path.dirname(path)))):
                 os.makedirs(format_path(os.path.join(dest_folder, os.path.dirname(path))))
+
             shutil.copy(row[0], format_path(os.path.join(dest_folder, os.path.dirname(path), os.path.basename(path))))
+
         db.execute("SELECT COUNT(path) FROM files WHERE md5_after IS NULL")
         if db.fetchone()[0] != 0:
             with open(dest_folder + "/deleted.txt", "w+") as f:
@@ -158,6 +173,7 @@ def second_run():
                 db.execute("SELECT path FROM files WHERE md5_after IS NULL")
                 for row in db:
                     f.write(row[0])
+
         db_conn.commit()
         db_conn.close()
         getpass("\n\nDone! Thanks for using! Press ENTER to exit")
@@ -177,7 +193,9 @@ def setup():
             print("Invalid path, please try again (make sure that the folder exists)")
     first_run()
 
-print("Welcome to the 'folder difference checker' tool.\nThis tool will scan one folder two times and copy all the changed files that took place between those two scans in that folder to another directory.\n\n")
+print("Welcome to the 'folder difference checker' tool.")
+print("This tool will scan one folder two times and copy all the changed files that took place between those two scans in that folder to another directory.\n\n")
+
 if os.path.isfile("folder_difference.db"):
     print("You already scanned a folder. Do you want to copy the changed files to another folder (1) or start from scratch (2)?")
     option = option_chooser()
