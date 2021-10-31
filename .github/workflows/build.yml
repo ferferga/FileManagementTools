@@ -1,0 +1,68 @@
+name: Generate Artifacts 🛠️
+
+on:
+  push:
+
+jobs:
+  build:
+    name: Build 🛠️
+    strategy:
+      matrix:
+        os: 
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
+        arch: 
+          - x64
+        tool:
+          - 'folder_structure_copy'
+          - 'difference_checker'
+        # exclude:
+        #   - os: windows-latest
+        #     arch: armhf
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout 
+        uses: actions/checkout@v2.3.5
+
+      - name: Setup Python 🐍
+        uses: actions/setup-python@v2.2.2
+        with:
+          architecture: ${{ matrix.arch}}
+
+      - name: Install requirements ⚙️
+        working-directory: ./${{ matrix.tool }}
+        run: |
+          pip install -r requirements.txt
+          pip install PyInstaller
+
+      - name: Run PyInstaller 👷
+        working-directory: ./${{ matrix.tool }}
+        run: |
+          python -m PyInstaller ${{ matrix.tool }}.py --onefile
+
+        # The bash version included in MacOS is very old, so it's unreliable for
+        # substitution scripts
+      - name: Sanitize OS names 🧹 (UNIX)
+        if: ${{ matrix.os != 'windows-latest' }}
+        id: os
+        uses: frabert/replace-string-action@v2.0
+        with:
+          pattern: '-latest'
+          string: ${{ matrix.os }}
+          replace-with: ''
+
+      - name: Build (UNIX systems)
+        uses: actions/upload-artifact@v2
+        if: ${{ matrix.os != 'windows-latest' }}
+        with:
+          name: ${{ matrix.tool }}-${{ steps.os.outputs.replaced }}_${{ matrix.arch }}
+          path: ./${{ matrix.tool }}/dist/${{ matrix.tool }}
+
+      - name: Build (Windows 🪟)
+        uses: actions/upload-artifact@v2
+        if: ${{ matrix.os == 'windows-latest' }}
+        with:
+          name: ${{ matrix.tool }}-windows_${{ matrix.arch }}
+          path: ./${{ matrix.tool }}/dist/${{ matrix.tool }}.exe
