@@ -2,6 +2,7 @@ name: Generate Artifacts 🛠️
 
 on:
   push:
+  workflow_dispatch:
 
 jobs:
   build:
