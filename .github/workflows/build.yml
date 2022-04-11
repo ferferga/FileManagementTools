@@ -55,14 +55,14 @@ jobs:
           replace-with: ''
 
       - name: Build (UNIX systems)
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: ${{ matrix.os != 'windows-latest' }}
         with:
           name: ${{ matrix.tool }}-${{ steps.os.outputs.replaced }}_${{ matrix.arch }}
           path: ./${{ matrix.tool }}/dist/${{ matrix.tool }}
 
       - name: Build (Windows 🪟)
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: ${{ matrix.os == 'windows-latest' }}
         with:
           name: ${{ matrix.tool }}-windows_${{ matrix.arch }}
