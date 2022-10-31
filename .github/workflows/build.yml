@@ -49,7 +49,7 @@ jobs:
       - name: Sanitize OS names 🧹 (UNIX)
         if: ${{ matrix.os != 'windows-latest' }}
         id: os
-        uses: frabert/replace-string-action@v2.2
+        uses: frabert/replace-string-action@v2.3
         with:
           pattern: '-latest'
           string: ${{ matrix.os }}
